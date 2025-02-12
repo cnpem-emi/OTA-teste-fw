@@ -242,5 +242,4 @@
  C:/Users/pedro.mamud/.platformio/packages/framework-arduinoespressif32/cores/esp32/MD5Builder.h \
  C:/Users/pedro.mamud/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32s2/include/esp_rom/include/esp_rom_md5.h \
  C:/Users/pedro.mamud/.platformio/packages/framework-arduinoespressif32/libraries/FS/src/FS.h \
- C:/Users/pedro.mamud/.platformio/packages/framework-arduinoespressif32/libraries/SPIFFS/src/SPIFFS.h \
- C:/Users/pedro.mamud/.platformio/packages/framework-arduinoespressif32/libraries/Preferences/src/Preferences.h
+ C:/Users/pedro.mamud/.platformio/packages/framework-arduinoespressif32/libraries/SPIFFS/src/SPIFFS.h
