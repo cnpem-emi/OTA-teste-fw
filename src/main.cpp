@@ -8,8 +8,8 @@
 #define WIFI_PASSWORD NULL
 
 //Variaveis que armazenam a versão do firmware
-uint8_t lastVersion = 0;
-uint8_t versionCurrent = 1;
+uint8_t lastVersion = 1;
+uint8_t versionCurrent = 2;
 
 void connectWiFi()
 {   
@@ -94,6 +94,7 @@ void setup() {
 }
 
 void loop() {
-    Serial.println("Version: " + String(versionCurrent));
+    //Serial.println("Version: " + String(versionCurrent));
+    Serial.println("Hello World");
     delay(2000);
 }
