@@ -6,8 +6,8 @@
 #define WIFI_PASSWORD ""  
 
 // Variáveis para versão do firmware
-int currentVersion = 1;
-int lastVersion = 0;
+int currentVersion = 2;
+int lastVersion = 1;
 
 
 void connectWiFi() {   
