@@ -11,8 +11,8 @@ Preferences preferences;
 #define WIFI_PASSWORD ""  
 
 // Variáveis para versão do firmware
-uint8_t lastVersion = 2;  
-uint8_t versionCurrent;
+uint8_t currentVersion = 1;  
+uint8_t lastVersion = 0;
 
 void connectWiFi() {   
     Serial.println("Iniciando conexão WiFi...");
@@ -50,28 +50,25 @@ void updateOTA() {
 
     case HTTP_UPDATE_OK:
         Serial.println("HTTP_UPDATE_OK");
-        versionCurrent = lastVersion;
-        preferences.putUChar("version", versionCurrent); // Salva nova versão
-        preferences.end();  // Finaliza preferences aqui, pois o ESP irá reiniciar
+        lastVersion = currentVersion;
         break;
     }
 }
 
 // Checagem de atualização
 void checkUpdate() {
+    
     Serial.println("Verificando atualização...");
     
-    if (versionCurrent != lastVersion) {
+    if (currentVersion != lastVersion) {
+
         Serial.println("Inicializando HTTP para checagem de atualização...");
-        
+        delay(500);
         HTTPClient http;
         http.begin("https://github.com/cnpem-emi/OTA-teste-fw/blob/master/.pio/build/lolin_s2_mini/firmware.bin");
         http.setConnectTimeout(4000);
         http.setTimeout(4000);
-
         int resCode = http.GET();
-        Serial.println("Versão atual: " + String(versionCurrent));
-
         if (resCode > 0) {
             updateOTA();
         }
@@ -82,18 +79,11 @@ void checkUpdate() {
 void setup() {
     Serial.begin(9600);
     delay(2000);
-
-    preferences.begin("ota", false); 
-    versionCurrent = preferences.getUChar("version", 1);  // Recupera versão salva
-
     connectWiFi();
-
-    preferences.putUChar("version", versionCurrent); // Salva versão após check
-    preferences.end(); 
 }
 
 void loop() {
     checkUpdate();  // Checa e faz update se necessário
-    Serial.println("Versão: " + String(versionCurrent));
+    Serial.println("Versão: " + String(currentVersion));
     delay(5000);
 }
