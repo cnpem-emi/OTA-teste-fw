@@ -51,8 +51,8 @@ void updateOTA() {
     case HTTP_UPDATE_OK:
         Serial.println("HTTP_UPDATE_OK");
         versionCurrent = lastVersion;
-        preferences.putUChar("version", versionCurrent); // Salva nova versão
-        preferences.end();  // Finaliza preferences aqui, pois o ESP irá reiniciar
+        //preferences.putUChar("version", versionCurrent); // Salva nova versão
+        //preferences.end();  // Finaliza preferences aqui, pois o ESP irá reiniciar
         break;
     }
 }
@@ -83,17 +83,19 @@ void setup() {
     Serial.begin(9600);
     delay(2000);
 
-    preferences.begin("ota", false); 
-    versionCurrent = preferences.getUChar("version", 1);  // Recupera versão salva
+    //preferences.begin("ota", false); 
+    //versionCurrent = preferences.getUChar("version", 1);  // Recupera versão salva
 
     connectWiFi();
-    checkUpdate();  // Checa e faz update se necessário
+    //checkUpdate();  // Checa e faz update se necessário
 
-    preferences.putUChar("version", versionCurrent); // Salva versão após check
-    preferences.end(); 
+    //preferences.putUChar("version", versionCurrent); // Salva versão após check
+    //preferences.end(); 
 }
 
 void loop() {
+    //connectWiFi();
+    checkUpdate();  // Checa e faz update se necessário
     Serial.println("Versão: " + String(versionCurrent));
     delay(2000);
 }
