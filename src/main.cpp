@@ -11,8 +11,8 @@ Preferences preferences;
 #define WIFI_PASSWORD ""  
 
 // Variáveis para versão do firmware
-uint8_t currentVersion = 2;  
-uint8_t lastVersion;
+uint8_t currentVersion = 1;  
+uint8_t lastVersion = 0;
 
 void connectWiFi() {   
     Serial.println("Iniciando conexão WiFi...");
@@ -52,6 +52,7 @@ void updateOTA() {
     case HTTP_UPDATE_OK:
         Serial.println("HTTP_UPDATE_OK");
         lastVersion = currentVersion;
+        preferences.putUInt("lastVersion", lastVersion); // Salva a nova versão
         break;
     }
 }
@@ -74,12 +75,17 @@ void checkUpdate() {
         if (resCode > 0) {
             updateOTA();
         }
+        http.end();
     }
 }
 
 void setup() {
     Serial.begin(9600);
     delay(2000);
+
+    preferences.begin("firmware", false);
+    lastVersion = preferences.getUInt("lastVersion", 1);
+
     connectWiFi();
 }
 
