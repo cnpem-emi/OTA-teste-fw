@@ -11,8 +11,8 @@ Preferences preferences;
 #define WIFI_PASSWORD ""  
 
 // Variáveis para versão do firmware
-uint8_t currentVersion = 1;  
-uint8_t lastVersion = 0;
+uint8_t currentVersion = 2;  
+uint8_t lastVersion = 1;
 
 void connectWiFi() {   
     Serial.println("Iniciando conexão WiFi...");
