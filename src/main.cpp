@@ -1,6 +1,7 @@
 // #include <WiFi.h>
 // #include <HTTPClient.h>      //Biblioteca para realizar requisições por HTTP
 // #include <ESP32httpUpdate.h> //Biblioteca que possibilita OTA por checagem HTTP
+// #include <Arduino.h>
 
 // // declaration for Wifi connection
 // #define WIFI_SSID "Devices"
