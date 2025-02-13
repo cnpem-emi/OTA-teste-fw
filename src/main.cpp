@@ -1,13 +1,16 @@
 #include <WiFi.h>
 #include <HTTPClient.h>
 #include <ESP32httpUpdate.h>
+#include <Preferences.h>
+
+Preferences preferences;
 
 #define WIFI_SSID "Devices"
 #define WIFI_PASSWORD ""  
 
 // Variáveis para versão do firmware
-int currentVersion = 2;
-int lastVersion = 1;
+int currentVersion = 1;
+int lastVersion = 0;
 
 
 void connectWiFi() {   
@@ -49,7 +52,10 @@ void updateOTA() {
 
     case HTTP_UPDATE_OK:
         Serial.println("HTTP_UPDATE_OK");
-        currentVersion = lastVersion + 1;
+        lastVersion = currentVersion;
+        preferences.putInt("lastVersion", lastVersion);
+        Serial.print("Nova versão salva na flash: ");
+        Serial.println(lastVersion);
         break;
     }
 }
@@ -59,7 +65,7 @@ void checkUpdate() {
     
     Serial.println("Verificando atualização...");
     
-    if (currentVersion != lastVersion) {
+    if (currentVersion > lastVersion) {
 
         Serial.println("Inicializando HTTP para checagem de atualização...");
         delay(500);
@@ -77,6 +83,10 @@ void checkUpdate() {
 void setup() {
     Serial.begin(9600);
     delay(2000);
+
+    preferences.begin("ota", false);  // Inicia armazenamento na flash
+    lastVersion = preferences.getInt("lastVersion", 0);  // Obtém a última versão salva
+
     connectWiFi();
 }
 
