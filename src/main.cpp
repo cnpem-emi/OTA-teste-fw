@@ -8,7 +8,7 @@
 
 Preferences preferences;
 
-uint8_t currentVersion = 2;
+uint8_t currentVersion = 3;
 uint8_t lastVersion = 0;
 
 void connectWiFi() {   
@@ -62,6 +62,8 @@ void checkUpdate() {
     lastVersion = preferences.getUInt("version", 0);
     preferences.end();
 
+    Serial.println("Avaliando update...");
+
     if (currentVersion != lastVersion)
         Serial.println("Inicializando HTTP para checagem de atualização...");
         delay(500);
@@ -84,4 +86,5 @@ void setup() {
 void loop() {
     checkUpdate();
     delay(3000);
+    Serial.println("Vesion: " + String(currentVersion));
 }
