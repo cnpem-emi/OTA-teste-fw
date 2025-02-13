@@ -16,9 +16,11 @@ void connectWiFi() {
     delay(500);
 
     Serial.print("Conectando ao WiFi");
-    while (WiFi.status() != WL_CONNECTED) {
+    int attempts = 0;
+    while (WiFi.status() != WL_CONNECTED && attempts < 20) {  // Limita tentativas
         Serial.print(".");
         delay(500);
+        attempts++;
     }
 
     if (WiFi.status() == WL_CONNECTED) {
@@ -52,7 +54,11 @@ void updateOTA() {
 void checkUpdate() {
     Serial.println("Verificando versão do firmware...");
 
-    preferences.begin("ota", false);
+    if (!preferences.begin("ota", false)) {  // Verifica se consegue inicializar as preferências
+        Serial.println("Erro ao iniciar Preferences!");
+        return;
+    }
+
     String storedVersion = preferences.getString("fw_version", "0.0.0");  // Versão salva ou "0.0.0" se for a primeira vez
 
     Serial.print("Versão armazenada: ");
@@ -60,18 +66,9 @@ void checkUpdate() {
     Serial.print("Versão atual no código: ");
     Serial.println(firmwareVersion);
 
-
-
     if (storedVersion != firmwareVersion) {
         Serial.println("Nova versão detectada! Iniciando atualização...");
-        HTTPClient http;
-        http.begin("https://github.com/cnpem-emi/OTA-teste-fw/blob/master/.pio/build/lolin_s2_mini/firmware.bin");
-        http.setConnectTimeout(4000);
-        http.setTimeout(4000);
-        int resCode = http.GET();
-        if (resCode > 0) {  
-            updateOTA();
-        }   
+        updateOTA();  // Chama diretamente a atualização sem abrir outra conexão HTTP
     } else {
         Serial.println("Nenhuma atualização necessária.");
     }
@@ -80,15 +77,18 @@ void checkUpdate() {
 }
 
 void setup() {
-    Serial.begin(9600);
+    Serial.begin(115200);  // Mudado para 115200 para facilitar debug
     delay(5000);
+    Serial.println("Iniciando sistema...");
     connectWiFi();
 }
 
 void loop() {
+    Serial.println("Rodando loop principal...");
     checkUpdate();
     delay(4000); 
 }
+
 
 
 //---------------------------------------
