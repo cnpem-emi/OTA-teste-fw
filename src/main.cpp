@@ -8,7 +8,7 @@
 
 Preferences preferences;
 
-uint8_t currentVersion = 3;
+uint8_t currentVersion = 2;
 uint8_t lastVersion = 0;
 
 void connectWiFi() {   
