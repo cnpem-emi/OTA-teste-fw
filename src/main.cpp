@@ -78,10 +78,10 @@
 
 #define WIFI_SSID "Devices"
 #define WIFI_PASSWORD "" 
-#define FIRMWARE_VERSION 1  // Incrementar este número quando enviar nova versão ao GitHub
+
+#define FIRMWARE_VERSION 1 
 
 Preferences preferences;
-bool updateChecked = false;  // Flag para garantir que só checa uma vez
 
 void connectWiFi() {   
     Serial.println("Iniciando conexão WiFi...");
@@ -118,15 +118,13 @@ void updateOTA() {
 
     case HTTP_UPDATE_OK:
         Serial.println("HTTP_UPDATE_OK");
-        // Salva a nova versão na memória
+        // Salva a nova versão na memória após o sucesso do update
         preferences.putInt("fwVersion", FIRMWARE_VERSION);
         break;
     }
 }
 
-void checkUpdate() {
-    if (updateChecked) return;  // Se já checou uma vez, não checa novamente
-    
+void checkUpdate() { 
     // Lê a versão atual salva na memória
     int currentVersion = preferences.getInt("fwVersion", 0);
     Serial.printf("Versão atual do firmware: %d\n", currentVersion);
@@ -149,7 +147,6 @@ void checkUpdate() {
         Serial.println("Firmware já está atualizado!");
     }
     
-    updateChecked = true;  // Marca que já checou
 }
 
 void setup() {
@@ -161,7 +158,6 @@ void setup() {
 
 void loop() {
     checkUpdate(); 
-    
     // Mostra a versão atual constantemente
     Serial.println("====== INFORMAÇÃO DO FIRMWARE ======");
     Serial.printf("Versão do firmware em execução: %d\n", preferences.getInt("fwVersion", 0));
