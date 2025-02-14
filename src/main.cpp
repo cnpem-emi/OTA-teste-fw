@@ -79,7 +79,7 @@
 #define WIFI_SSID "Devices"
 #define WIFI_PASSWORD "" 
 
-#define FIRMWARE_VERSION 1 // Atualize este número sempre que recompilar o código
+uint8_t currentVersion = 1; // Atualize este número sempre que recompilar o código
 
 Preferences preferences;
 
@@ -109,48 +109,60 @@ void updateOTA() {
 
     switch (ret) {
     case HTTP_UPDATE_FAILED:
-        Serial.printf("Erro na atualização (%d): %s\n", ESPhttpUpdate.getLastError(), ESPhttpUpdate.getLastErrorString().c_str());
+        Serial.printf("HTTP_UPDATE_FAILD Error (%d): %s\n", ESPhttpUpdate.getLastError(), ESPhttpUpdate.getLastErrorString().c_str());
         break;
 
     case HTTP_UPDATE_NO_UPDATES:
-        Serial.println("Nenhuma atualização disponível.");
+        Serial.println("HTTP_UPDATE_NO_UPDATES");
         break;
 
     case HTTP_UPDATE_OK:
-        Serial.println("Atualização OTA concluída com sucesso!");
-        // 🔹 Salva a nova versão na memória flash
-        preferences.putInt("fwVersion", FIRMWARE_VERSION);
-        preferences.end();
+        Serial.println("HTTP_UPDATE_OK");
+        // Atualize a versão na memória após a atualização bem-sucedida
+        preferences.putInt("VERSION", currentVersion); // Grava a versão após a atualização
         break;
     }
 }
 
-void checkUpdate() { 
-    // Lê a versão salva na memória flash
-    int storedVersion = preferences.getInt("fwVersion", 0);
-    Serial.printf("Versão atual salva na flash: %d\n", storedVersion);
-    Serial.printf("Versão do firmware no código: %d\n", FIRMWARE_VERSION);
+void checkUpdate() {
+    
+    // Lê a versão armazenada
+    int storedVersion = preferences.getInt("VERSION", 0);
 
-    if (storedVersion < FIRMWARE_VERSION) {
-        Serial.println("Nova versão detectada! Iniciando atualização...");
-        updateOTA();
-    } else {
-        Serial.println("Firmware já está atualizado!");
-    }
+    // Verifica se a versão armazenada é menor que a versão atual
+    if (storedVersion < currentVersion) {
+        Serial.println("Versão mais nova disponível! Iniciando atualização...");
+        delay(500);
+        HTTPClient http;
+        http.begin("https://raw.githubusercontent.com/cnpem-emi/OTA-teste-fw/master/.pio/build/lolin_s2_mini/firmware.bin");
+        http.setConnectTimeout(4000);
+        http.setTimeout(4000);
+        int resCode = http.GET();
+        if (resCode > 0) {
+            preferences.putInt("VERSION", currentVersion);  
+            updateOTA();
+        } else {
+            Serial.println("Falha ao verificar atualização!");
+        }
+    } 
 }
 
 void setup() {
     Serial.begin(9600);
     delay(4000);
-    preferences.begin("firmware", false);  // Inicia o namespace de armazenamento
+
+    // Inicializa as preferências e lê a versão da memória
+    preferences.begin("firmware", false);  // Inicia o namespace para armazenamento
+
     connectWiFi();
 }
 
 void loop() {
     checkUpdate(); 
+
     Serial.println("====== INFORMAÇÃO DO FIRMWARE ======");
-    Serial.printf("Versão do firmware em execução: %d\n", preferences.getInt("fwVersion", 0));
+    Serial.printf("Versão do firmware em execução: %d\n", preferences.getInt("VERSION", 0));
     Serial.println("==================================");
     
-    delay(5000);
+    delay(3000);
 }
