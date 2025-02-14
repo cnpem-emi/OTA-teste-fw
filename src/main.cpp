@@ -125,7 +125,6 @@ void updateOTA() {
 }
 
 void checkUpdate() {
-    
     if (updateChecked) return;  // Se já checou uma vez, não checa novamente
     
     // Lê a versão atual salva na memória
@@ -161,5 +160,11 @@ void setup() {
 
 void loop() {
     checkUpdate(); 
+    
+    // Mostra a versão atual constantemente
+    Serial.println("====== INFORMAÇÃO DO FIRMWARE ======");
+    Serial.printf("Versão do firmware em execução: %d\n", preferences.getInt("fwVersion", 0));
+    Serial.println("==================================");
+    
     delay(3000);
 }
