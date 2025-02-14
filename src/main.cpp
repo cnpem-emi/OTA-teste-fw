@@ -137,7 +137,8 @@ void checkUpdate() {
         Serial.println("Inicializando HTTP para checagem de atualização...");
         delay(500);
         HTTPClient http;
-        http.begin("https://github.com/cnpem-emi/OTA-teste-fw/blob/master/.pio/build/lolin_s2_mini/firmware.bin");
+        //http.begin("https://github.com/cnpem-emi/OTA-teste-fw/blob/master/.pio/build/lolin_s2_mini/firmware.bin");
+        http.begin("https://raw.githubusercontent.com/cnpem-emi/OTA-teste-fw/master/.pio/build/lolin_s2_mini/firmware.bin");
         http.setConnectTimeout(4000);
         http.setTimeout(4000);
         int resCode = http.GET();
