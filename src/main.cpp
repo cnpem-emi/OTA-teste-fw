@@ -80,7 +80,6 @@
 #define WIFI_PASSWORD "" 
 
 uint8_t currentVersion = 2; // Atualize este número sempre que recompilar o código
-
 Preferences preferences;
 
 void connectWiFi() {   
@@ -128,6 +127,13 @@ void checkUpdate() {
     // Lê a versão armazenada na memória
     int storedVersion = preferences.getInt("VERSION", 0);
 
+    // Se não houver versão armazenada, grava a versão atual (primeiro boot)
+    if (storedVersion == 0) {
+        Serial.println("Primeira inicialização, gravando versão...");
+        preferences.putInt("VERSION", currentVersion);
+        storedVersion = currentVersion;
+    }
+
     // Verifica se a versão armazenada é menor que a versão atual
     if (storedVersion < currentVersion) {
         Serial.println("Nova versão disponível! Iniciando atualização...");
@@ -165,3 +171,4 @@ void loop() {
     
     delay(3000);
 }
+
