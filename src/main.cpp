@@ -79,7 +79,7 @@
 #define WIFI_SSID "Devices"
 #define WIFI_PASSWORD "" 
 
-uint8_t currentVersion = 1; // Atualize este número sempre que recompilar o código
+uint8_t currentVersion = 2; // Atualize este número sempre que recompilar o código
 
 Preferences preferences;
 
