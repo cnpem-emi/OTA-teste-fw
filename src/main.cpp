@@ -109,42 +109,41 @@ void updateOTA() {
 
     switch (ret) {
     case HTTP_UPDATE_FAILED:
-        Serial.printf("HTTP_UPDATE_FAILD Error (%d): %s\n", ESPhttpUpdate.getLastError(), ESPhttpUpdate.getLastErrorString().c_str());
+        Serial.printf("HTTP_UPDATE_FAILED Error (%d): %s\n", ESPhttpUpdate.getLastError(), ESPhttpUpdate.getLastErrorString().c_str());
         break;
 
     case HTTP_UPDATE_NO_UPDATES:
-        Serial.println("HTTP_UPDATE_NO_UPDATES");
+        Serial.println("Nenhuma atualização disponível.");
         break;
 
     case HTTP_UPDATE_OK:
-        Serial.println("HTTP_UPDATE_OK");
-        // Atualize a versão na memória após a atualização bem-sucedida
+        Serial.println("Atualização bem-sucedida!");
+        // Após a atualização, salve a nova versão na memória
         preferences.putInt("VERSION", currentVersion); // Grava a versão após a atualização
         break;
     }
 }
 
 void checkUpdate() {
-    
-    // Lê a versão armazenada
+    // Lê a versão armazenada na memória
     int storedVersion = preferences.getInt("VERSION", 0);
 
     // Verifica se a versão armazenada é menor que a versão atual
     if (storedVersion < currentVersion) {
-        Serial.println("Versão mais nova disponível! Iniciando atualização...");
-        delay(500);
+        Serial.println("Nova versão disponível! Iniciando atualização...");
         HTTPClient http;
         http.begin("https://raw.githubusercontent.com/cnpem-emi/OTA-teste-fw/master/.pio/build/lolin_s2_mini/firmware.bin");
         http.setConnectTimeout(4000);
         http.setTimeout(4000);
         int resCode = http.GET();
         if (resCode > 0) {
-            preferences.putInt("VERSION", currentVersion);  
-            updateOTA();
+            updateOTA();  // Atualiza o firmware
         } else {
             Serial.println("Falha ao verificar atualização!");
         }
-    } 
+    } else {
+        Serial.println("Firmware já está atualizado.");
+    }
 }
 
 void setup() {
